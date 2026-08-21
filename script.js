@@ -1,0 +1,17 @@
+document.documentElement.classList.add('js');
+const header=document.querySelector('.site-header');
+const toggle=document.querySelector('.menu-toggle');
+const nav=document.querySelector('#nav');
+const updateHeader=()=>header.classList.toggle('scrolled',scrollY>24);
+updateHeader();addEventListener('scroll',updateHeader,{passive:true});
+toggle.addEventListener('click',()=>{const open=toggle.getAttribute('aria-expanded')==='true';toggle.setAttribute('aria-expanded',String(!open));nav.classList.toggle('open',!open);document.body.style.overflow=open?'':'hidden'});
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nav.classList.remove('open');toggle.setAttribute('aria-expanded','false');document.body.style.overflow=''}));
+const observer=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');observer.unobserve(e.target)}}),{threshold:.12,rootMargin:'0px 0px -40px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+const sections=[...document.querySelectorAll('main section[id]')];
+const navLinks=[...nav.querySelectorAll('a')];
+const sectionObserver=new IntersectionObserver(entries=>entries.forEach(e=>{if(e.isIntersecting){navLinks.forEach(a=>a.classList.toggle('active',a.getAttribute('href')==='#'+e.target.id))}}),{rootMargin:'-40% 0px -55%',threshold:0});sections.forEach(s=>sectionObserver.observe(s));
+const lightbox=document.querySelector('.lightbox'),lightboxImage=lightbox.querySelector('img');
+document.querySelectorAll('.gallery-item').forEach(item=>item.addEventListener('click',()=>{const img=item.querySelector('img');lightboxImage.src=img.src;lightboxImage.alt=img.alt;lightbox.showModal()}));
+lightbox.querySelector('button').addEventListener('click',()=>lightbox.close());
+lightbox.addEventListener('click',e=>{if(e.target===lightbox)lightbox.close()});
